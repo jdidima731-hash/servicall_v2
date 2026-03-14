@@ -1,0 +1,1838 @@
+[
+  {
+    "id": "blueprint-1",
+    "name": "Téléphonie (Base) - Appel entrant",
+    "industry": "generic",
+    "description": "Workflow pour Appel entrant dans la catégorie Téléphonie (Base).",
+    "trigger": "call_received",
+    "actions": [
+      {
+        "type": "voicemail_transcription",
+        "config": {
+          "name": "Transcription"
+        }
+      },
+      {
+        "type": "ai_summary",
+        "config": {
+          "name": "Résumé IA"
+        }
+      },
+      {
+        "type": "ai_intent",
+        "config": {
+          "name": "Intention IA"
+        }
+      },
+      {
+        "type": "ai_sentiment_analysis",
+        "config": {
+          "name": "Sentiment IA"
+        }
+      },
+      {
+        "type": "create_task",
+        "config": {
+          "name": "Création tâche CRM"
+        }
+      }
+    ]
+  },
+  {
+    "id": "blueprint-2",
+    "name": "Téléphonie (Base) - Appel sortant",
+    "industry": "generic",
+    "description": "Workflow pour Appel sortant dans la catégorie Téléphonie (Base).",
+    "trigger": "call_completed",
+    "actions": [
+      {
+        "type": "record_call",
+        "config": {
+          "name": "Log appel"
+        }
+      },
+      {
+        "type": "ai_summary",
+        "config": {
+          "name": "Résumé IA"
+        }
+      },
+      {
+        "type": "create_task",
+        "config": {
+          "name": "Suivi CRM"
+        }
+      }
+    ]
+  },
+  {
+    "id": "blueprint-3",
+    "name": "Téléphonie (Base) - Appel manqué",
+    "industry": "generic",
+    "description": "Workflow pour Appel manqué dans la catégorie Téléphonie (Base).",
+    "trigger": "call_missed",
+    "actions": [
+      {
+        "type": "create_task",
+        "config": {
+          "name": "Création tâche rappel"
+        }
+      },
+      {
+        "type": "send_sms",
+        "config": {
+          "name": "Notification SMS/email"
+        }
+      }
+    ]
+  },
+  {
+    "id": "blueprint-4",
+    "name": "Téléphonie (Base) - Appel rejeté",
+    "industry": "generic",
+    "description": "Workflow pour Appel rejeté dans la catégorie Téléphonie (Base).",
+    "trigger": "call_completed",
+    "actions": [
+      {
+        "type": "record_call",
+        "config": {
+          "name": "Log appel"
+        }
+      },
+      {
+        "type": "send_sms",
+        "config": {
+          "name": "Notification interne"
+        }
+      }
+    ]
+  },
+  {
+    "id": "blueprint-5",
+    "name": "Téléphonie (Base) - Appel hors horaires",
+    "industry": "generic",
+    "description": "Workflow pour Appel hors horaires dans la catégorie Téléphonie (Base).",
+    "trigger": "call_completed",
+    "actions": [
+      {
+        "type": "send_sms",
+        "config": {
+          "name": "Notification agent"
+        }
+      },
+      {
+        "type": "send_sms",
+        "config": {
+          "name": "Notification superviseur"
+        }
+      }
+    ]
+  },
+  {
+    "id": "blueprint-6",
+    "name": "Téléphonie (Base) - Appel transféré",
+    "industry": "generic",
+    "description": "Workflow pour Appel transféré dans la catégorie Téléphonie (Base).",
+    "trigger": "call_completed",
+    "actions": [
+      {
+        "type": "record_call",
+        "config": {
+          "name": "Log appel"
+        }
+      },
+      {
+        "type": "assign_prospect",
+        "config": {
+          "name": "Attribution agent"
+        }
+      }
+    ]
+  },
+  {
+    "id": "blueprint-7",
+    "name": "Téléphonie (Base) - Appel en attente",
+    "industry": "generic",
+    "description": "Workflow pour Appel en attente dans la catégorie Téléphonie (Base).",
+    "trigger": "call_completed",
+    "actions": [
+      {
+        "type": "schedule_followup",
+        "config": {
+          "name": "Temporisation"
+        }
+      },
+      {
+        "type": "send_sms",
+        "config": {
+          "name": "Notification"
+        }
+      }
+    ]
+  },
+  {
+    "id": "blueprint-8",
+    "name": "Téléphonie (Base) - Fin d’appel + résumé",
+    "industry": "generic",
+    "description": "Workflow pour Fin d’appel + résumé dans la catégorie Téléphonie (Base).",
+    "trigger": "call_completed",
+    "actions": [
+      {
+        "type": "ai_summary",
+        "config": {
+          "name": "Résumé IA"
+        }
+      },
+      {
+        "type": "create_task",
+        "config": {
+          "name": "Création note CRM"
+        }
+      }
+    ]
+  },
+  {
+    "id": "blueprint-9",
+    "name": "Téléphonie (Base) - Enregistrement d’appel",
+    "industry": "generic",
+    "description": "Workflow pour Enregistrement d’appel dans la catégorie Téléphonie (Base).",
+    "trigger": "call_completed",
+    "actions": [
+      {
+        "type": "record_call",
+        "config": {
+          "name": "Stockage BD / Drive"
+        }
+      },
+      {
+        "type": "record_call",
+        "config": {
+          "name": "Log interne"
+        }
+      }
+    ]
+  },
+  {
+    "id": "blueprint-10",
+    "name": "Téléphonie (Base) - Qualification post-appel",
+    "industry": "generic",
+    "description": "Workflow pour Qualification post-appel dans la catégorie Téléphonie (Base).",
+    "trigger": "call_completed",
+    "actions": [
+      {
+        "type": "update_lead",
+        "config": {
+          "name": "Changement statut"
+        }
+      },
+      {
+        "type": "update_lead",
+        "config": {
+          "name": "Tag"
+        }
+      },
+      {
+        "type": "ai_score",
+        "config": {
+          "name": "Scoring lead"
+        }
+      }
+    ]
+  },
+  {
+    "id": "blueprint-11",
+    "name": "Leads & Clients - Création automatique de lead",
+    "industry": "generic",
+    "description": "Workflow pour Création automatique de lead dans la catégorie Leads & Clients.",
+    "trigger": "prospect_created",
+    "actions": [
+      {
+        "type": "create_task",
+        "config": {
+          "name": "Créer tâche CRM"
+        }
+      },
+      {
+        "type": "update_lead",
+        "config": {
+          "name": "Tag automatique"
+        }
+      }
+    ]
+  },
+  {
+    "id": "blueprint-12",
+    "name": "Leads & Clients - Création manuelle de lead",
+    "industry": "generic",
+    "description": "Workflow pour Création manuelle de lead dans la catégorie Leads & Clients.",
+    "trigger": "prospect_created",
+    "actions": [
+      {
+        "type": "create_task",
+        "config": {
+          "name": "Créer tâche CRM"
+        }
+      }
+    ]
+  },
+  {
+    "id": "blueprint-13",
+    "name": "Leads & Clients - Qualification lead",
+    "industry": "generic",
+    "description": "Workflow pour Qualification lead dans la catégorie Leads & Clients.",
+    "trigger": "call_completed",
+    "actions": [
+      {
+        "type": "ai_summary",
+        "config": {
+          "name": "Changer statut"
+        }
+      },
+      {
+        "type": "create_task",
+        "config": {
+          "name": "Ajouter note"
+        }
+      }
+    ]
+  },
+  {
+    "id": "blueprint-14",
+    "name": "Leads & Clients - Attribution agent",
+    "industry": "generic",
+    "description": "Workflow pour Attribution agent dans la catégorie Leads & Clients.",
+    "trigger": "call_completed",
+    "actions": [
+      {
+        "type": "assign_prospect",
+        "config": {
+          "name": "Attribution agent"
+        }
+      }
+    ]
+  },
+  {
+    "id": "blueprint-15",
+    "name": "Leads & Clients - Réattribution agent",
+    "industry": "generic",
+    "description": "Workflow pour Réattribution agent dans la catégorie Leads & Clients.",
+    "trigger": "call_completed",
+    "actions": [
+      {
+        "type": "assign_prospect",
+        "config": {
+          "name": "Changement agent"
+        }
+      }
+    ]
+  },
+  {
+    "id": "blueprint-16",
+    "name": "Leads & Clients - Mise à jour statut",
+    "industry": "generic",
+    "description": "Workflow pour Mise à jour statut dans la catégorie Leads & Clients.",
+    "trigger": "call_completed",
+    "actions": [
+      {
+        "type": "ai_summary",
+        "config": {
+          "name": "Changer statut"
+        }
+      },
+      {
+        "type": "update_lead",
+        "config": {
+          "name": "Ajouter tag"
+        }
+      }
+    ]
+  },
+  {
+    "id": "blueprint-17",
+    "name": "Leads & Clients - Lead non joignable",
+    "industry": "generic",
+    "description": "Workflow pour Lead non joignable dans la catégorie Leads & Clients.",
+    "trigger": "call_completed",
+    "actions": [
+      {
+        "type": "create_task",
+        "config": {
+          "name": "Escalade"
+        }
+      },
+      {
+        "type": "send_sms",
+        "config": {
+          "name": "Notification agent"
+        }
+      }
+    ]
+  },
+  {
+    "id": "blueprint-18",
+    "name": "Leads & Clients - Lead perdu",
+    "industry": "generic",
+    "description": "Workflow pour Lead perdu dans la catégorie Leads & Clients.",
+    "trigger": "call_completed",
+    "actions": [
+      {
+        "type": "update_lead",
+        "config": {
+          "name": "Changement statut"
+        }
+      },
+      {
+        "type": "send_sms",
+        "config": {
+          "name": "Notification"
+        }
+      }
+    ]
+  },
+  {
+    "id": "blueprint-19",
+    "name": "Leads & Clients - Lead converti client",
+    "industry": "generic",
+    "description": "Workflow pour Lead converti client dans la catégorie Leads & Clients.",
+    "trigger": "call_completed",
+    "actions": [
+      {
+        "type": "update_lead",
+        "config": {
+          "name": "Tag client"
+        }
+      },
+      {
+        "type": "send_sms",
+        "config": {
+          "name": "Notification CRM interne"
+        }
+      }
+    ]
+  },
+  {
+    "id": "blueprint-20",
+    "name": "Relances & Suivi - Rappel immédiat",
+    "industry": "generic",
+    "description": "Workflow pour Rappel immédiat dans la catégorie Relances & Suivi.",
+    "trigger": "call_completed",
+    "actions": [
+      {
+        "type": "send_sms",
+        "config": {
+          "name": "Envoi SMS/email"
+        }
+      },
+      {
+        "type": "send_sms",
+        "config": {
+          "name": "Notification"
+        }
+      }
+    ]
+  },
+  {
+    "id": "blueprint-21",
+    "name": "Relances & Suivi - Rappel planifié",
+    "industry": "generic",
+    "description": "Workflow pour Rappel planifié dans la catégorie Relances & Suivi.",
+    "trigger": "call_completed",
+    "actions": [
+      {
+        "type": "schedule_followup",
+        "config": {
+          "name": "Temporisation"
+        }
+      },
+      {
+        "type": "send_sms",
+        "config": {
+          "name": "Envoi SMS/email"
+        }
+      }
+    ]
+  },
+  {
+    "id": "blueprint-22",
+    "name": "Relances & Suivi - Relance après appel manqué",
+    "industry": "generic",
+    "description": "Workflow pour Relance après appel manqué dans la catégorie Relances & Suivi.",
+    "trigger": "call_missed",
+    "actions": [
+      {
+        "type": "send_sms",
+        "config": {
+          "name": "Notification client"
+        }
+      },
+      {
+        "type": "update_lead",
+        "config": {
+          "name": "Changement statut"
+        }
+      }
+    ]
+  },
+  {
+    "id": "blueprint-23",
+    "name": "Relances & Suivi - Relance multi-tentatives",
+    "industry": "generic",
+    "description": "Workflow pour Relance multi-tentatives dans la catégorie Relances & Suivi.",
+    "trigger": "call_completed",
+    "actions": [
+      {
+        "type": "ai_score",
+        "config": {
+          "name": "IF/ELSE conditionnel"
+        }
+      },
+      {
+        "type": "schedule_followup",
+        "config": {
+          "name": "Temporisation"
+        }
+      }
+    ]
+  },
+  {
+    "id": "blueprint-24",
+    "name": "Relances & Suivi - Escalade sans réponse",
+    "industry": "generic",
+    "description": "Workflow pour Escalade sans réponse dans la catégorie Relances & Suivi.",
+    "trigger": "call_completed",
+    "actions": [
+      {
+        "type": "send_sms",
+        "config": {
+          "name": "Notification superviseur"
+        }
+      },
+      {
+        "type": "update_lead",
+        "config": {
+          "name": "Changement statut"
+        }
+      }
+    ]
+  },
+  {
+    "id": "blueprint-25",
+    "name": "Relances & Suivi - Relance après devis",
+    "industry": "generic",
+    "description": "Workflow pour Relance après devis dans la catégorie Relances & Suivi.",
+    "trigger": "call_completed",
+    "actions": [
+      {
+        "type": "send_sms",
+        "config": {
+          "name": "Envoi Email/SMS"
+        }
+      },
+      {
+        "type": "send_sms",
+        "config": {
+          "name": "Notification client"
+        }
+      }
+    ]
+  },
+  {
+    "id": "blueprint-26",
+    "name": "Relances & Suivi - Relance après RDV manqué",
+    "industry": "generic",
+    "description": "Workflow pour Relance après RDV manqué dans la catégorie Relances & Suivi.",
+    "trigger": "call_missed",
+    "actions": [
+      {
+        "type": "send_sms",
+        "config": {
+          "name": "Envoi SMS/email"
+        }
+      },
+      {
+        "type": "update_lead",
+        "config": {
+          "name": "Changement statut"
+        }
+      }
+    ]
+  },
+  {
+    "id": "blueprint-27",
+    "name": "Messages & Notifications - SMS automatique",
+    "industry": "generic",
+    "description": "Workflow pour SMS automatique dans la catégorie Messages & Notifications.",
+    "trigger": "call_completed",
+    "actions": [
+      {
+        "type": "send_sms",
+        "config": {
+          "name": "Envoi SMS"
+        }
+      }
+    ]
+  },
+  {
+    "id": "blueprint-28",
+    "name": "Messages & Notifications - Email automatique",
+    "industry": "generic",
+    "description": "Workflow pour Email automatique dans la catégorie Messages & Notifications.",
+    "trigger": "call_completed",
+    "actions": [
+      {
+        "type": "send_email",
+        "config": {
+          "name": "Envoi Email"
+        }
+      }
+    ]
+  },
+  {
+    "id": "blueprint-29",
+    "name": "Messages & Notifications - WhatsApp (optionnel)",
+    "industry": "generic",
+    "description": "Workflow pour WhatsApp (optionnel) dans la catégorie Messages & Notifications.",
+    "trigger": "call_completed",
+    "actions": [
+      {
+        "type": "send_whatsapp",
+        "config": {
+          "name": "Envoi WhatsApp"
+        }
+      }
+    ]
+  },
+  {
+    "id": "blueprint-30",
+    "name": "Messages & Notifications - Message vocal auto",
+    "industry": "generic",
+    "description": "Workflow pour Message vocal auto dans la catégorie Messages & Notifications.",
+    "trigger": "call_completed",
+    "actions": [
+      {
+        "type": "send_sms",
+        "config": {
+          "name": "Envoi audio"
+        }
+      },
+      {
+        "type": "send_sms",
+        "config": {
+          "name": "Notification"
+        }
+      }
+    ]
+  },
+  {
+    "id": "blueprint-31",
+    "name": "Messages & Notifications - Notification agent",
+    "industry": "generic",
+    "description": "Workflow pour Notification agent dans la catégorie Messages & Notifications.",
+    "trigger": "call_completed",
+    "actions": [
+      {
+        "type": "send_sms",
+        "config": {
+          "name": "Notification interne"
+        }
+      }
+    ]
+  },
+  {
+    "id": "blueprint-32",
+    "name": "Messages & Notifications - Notification superviseur",
+    "industry": "generic",
+    "description": "Workflow pour Notification superviseur dans la catégorie Messages & Notifications.",
+    "trigger": "call_completed",
+    "actions": [
+      {
+        "type": "send_sms",
+        "config": {
+          "name": "Notification interne"
+        }
+      }
+    ]
+  },
+  {
+    "id": "blueprint-33",
+    "name": "Messages & Notifications - Notification client",
+    "industry": "generic",
+    "description": "Workflow pour Notification client dans la catégorie Messages & Notifications.",
+    "trigger": "call_completed",
+    "actions": [
+      {
+        "type": "send_sms",
+        "config": {
+          "name": "Notification externe"
+        }
+      }
+    ]
+  },
+  {
+    "id": "blueprint-34",
+    "name": "Messages & Notifications - Notification CRM interne",
+    "industry": "generic",
+    "description": "Workflow pour Notification CRM interne dans la catégorie Messages & Notifications.",
+    "trigger": "call_completed",
+    "actions": [
+      {
+        "type": "record_call",
+        "config": {
+          "name": "Log interne"
+        }
+      }
+    ]
+  },
+  {
+    "id": "blueprint-35",
+    "name": "RDV & Agenda - Création RDV",
+    "industry": "generic",
+    "description": "Workflow pour Création RDV dans la catégorie RDV & Agenda.",
+    "trigger": "call_completed",
+    "actions": [
+      {
+        "type": "create_task",
+        "config": {
+          "name": "Créer tâche CRM"
+        }
+      },
+      {
+        "type": "create_appointment",
+        "config": {
+          "name": "Ajouter au calendrier"
+        }
+      }
+    ]
+  },
+  {
+    "id": "blueprint-36",
+    "name": "RDV & Agenda - Confirmation RDV",
+    "industry": "generic",
+    "description": "Workflow pour Confirmation RDV dans la catégorie RDV & Agenda.",
+    "trigger": "call_completed",
+    "actions": [
+      {
+        "type": "send_sms",
+        "config": {
+          "name": "Envoi SMS/email"
+        }
+      }
+    ]
+  },
+  {
+    "id": "blueprint-37",
+    "name": "RDV & Agenda - Rappel avant RDV",
+    "industry": "generic",
+    "description": "Workflow pour Rappel avant RDV dans la catégorie RDV & Agenda.",
+    "trigger": "call_completed",
+    "actions": [
+      {
+        "type": "schedule_followup",
+        "config": {
+          "name": "Temporisation"
+        }
+      },
+      {
+        "type": "send_sms",
+        "config": {
+          "name": "Envoi notification"
+        }
+      }
+    ]
+  },
+  {
+    "id": "blueprint-38",
+    "name": "RDV & Agenda - Annulation RDV",
+    "industry": "generic",
+    "description": "Workflow pour Annulation RDV dans la catégorie RDV & Agenda.",
+    "trigger": "call_completed",
+    "actions": [
+      {
+        "type": "update_lead",
+        "config": {
+          "name": "Changement statut"
+        }
+      },
+      {
+        "type": "send_sms",
+        "config": {
+          "name": "Notification"
+        }
+      }
+    ]
+  },
+  {
+    "id": "blueprint-39",
+    "name": "RDV & Agenda - Reprogrammation RDV",
+    "industry": "generic",
+    "description": "Workflow pour Reprogrammation RDV dans la catégorie RDV & Agenda.",
+    "trigger": "call_completed",
+    "actions": [
+      {
+        "type": "create_appointment",
+        "config": {
+          "name": "Mise à jour RDV"
+        }
+      },
+      {
+        "type": "send_sms",
+        "config": {
+          "name": "Notification"
+        }
+      }
+    ]
+  },
+  {
+    "id": "blueprint-40",
+    "name": "RDV & Agenda - RDV non honoré",
+    "industry": "generic",
+    "description": "Workflow pour RDV non honoré dans la catégorie RDV & Agenda.",
+    "trigger": "call_completed",
+    "actions": [
+      {
+        "type": "create_task",
+        "config": {
+          "name": "Escalade"
+        }
+      },
+      {
+        "type": "update_lead",
+        "config": {
+          "name": "Changement statut"
+        }
+      }
+    ]
+  },
+  {
+    "id": "blueprint-41",
+    "name": "RH / Recrutement - Réception CV par email",
+    "industry": "hr",
+    "description": "Workflow pour Réception CV par email dans la catégorie RH / Recrutement.",
+    "trigger": "call_completed",
+    "actions": [
+      {
+        "type": "ai_summary",
+        "config": {
+          "name": "Détection IA"
+        }
+      },
+      {
+        "type": "ai_summary",
+        "config": {
+          "name": "Extraction données"
+        }
+      }
+    ]
+  },
+  {
+    "id": "blueprint-42",
+    "name": "RH / Recrutement - Détection automatique CV",
+    "industry": "hr",
+    "description": "Workflow pour Détection automatique CV dans la catégorie RH / Recrutement.",
+    "trigger": "call_completed",
+    "actions": [
+      {
+        "type": "ai_summary",
+        "config": {
+          "name": "Extraction données"
+        }
+      },
+      {
+        "type": "ai_summary",
+        "config": {
+          "name": "Classification"
+        }
+      }
+    ]
+  },
+  {
+    "id": "blueprint-43",
+    "name": "RH / Recrutement - Extraction données CV",
+    "industry": "hr",
+    "description": "Workflow pour Extraction données CV dans la catégorie RH / Recrutement.",
+    "trigger": "call_completed",
+    "actions": [
+      {
+        "type": "ai_summary",
+        "config": {
+          "name": "IA"
+        }
+      },
+      {
+        "type": "record_call",
+        "config": {
+          "name": "Stockage BD"
+        }
+      }
+    ]
+  },
+  {
+    "id": "blueprint-44",
+    "name": "RH / Recrutement - Classification CV par métier",
+    "industry": "hr",
+    "description": "Workflow pour Classification CV par métier dans la catégorie RH / Recrutement.",
+    "trigger": "call_completed",
+    "actions": [
+      {
+        "type": "ai_summary",
+        "config": {
+          "name": "IA"
+        }
+      },
+      {
+        "type": "update_lead",
+        "config": {
+          "name": "Tag"
+        }
+      }
+    ]
+  },
+  {
+    "id": "blueprint-45",
+    "name": "RH / Recrutement - Scoring CV",
+    "industry": "hr",
+    "description": "Workflow pour Scoring CV dans la catégorie RH / Recrutement.",
+    "trigger": "call_completed",
+    "actions": [
+      {
+        "type": "ai_summary",
+        "config": {
+          "name": "IA"
+        }
+      },
+      {
+        "type": "update_lead",
+        "config": {
+          "name": "Changement statut"
+        }
+      }
+    ]
+  },
+  {
+    "id": "blueprint-46",
+    "name": "RH / Recrutement - Enregistrement CV",
+    "industry": "hr",
+    "description": "Workflow pour Enregistrement CV dans la catégorie RH / Recrutement.",
+    "trigger": "call_completed",
+    "actions": [
+      {
+        "type": "ai_summary",
+        "config": {
+          "name": "Stockage Drive/BD"
+        }
+      }
+    ]
+  },
+  {
+    "id": "blueprint-47",
+    "name": "RH / Recrutement - Ajout ligne tableau RH",
+    "industry": "hr",
+    "description": "Workflow pour Ajout ligne tableau RH dans la catégorie RH / Recrutement.",
+    "trigger": "call_completed",
+    "actions": [
+      {
+        "type": "create_task",
+        "config": {
+          "name": "Création tâche CRM"
+        }
+      }
+    ]
+  },
+  {
+    "id": "blueprint-48",
+    "name": "RH / Recrutement - Notification RH",
+    "industry": "hr",
+    "description": "Workflow pour Notification RH dans la catégorie RH / Recrutement.",
+    "trigger": "call_completed",
+    "actions": [
+      {
+        "type": "send_sms",
+        "config": {
+          "name": "Notification interne"
+        }
+      }
+    ]
+  },
+  {
+    "id": "blueprint-49",
+    "name": "RH / Recrutement - Réponse automatique candidat",
+    "industry": "hr",
+    "description": "Workflow pour Réponse automatique candidat dans la catégorie RH / Recrutement.",
+    "trigger": "call_completed",
+    "actions": [
+      {
+        "type": "send_sms",
+        "config": {
+          "name": "Envoi Email/SMS"
+        }
+      }
+    ]
+  },
+  {
+    "id": "blueprint-50",
+    "name": "RH / Recrutement - Archivage CV",
+    "industry": "hr",
+    "description": "Workflow pour Archivage CV dans la catégorie RH / Recrutement.",
+    "trigger": "call_completed",
+    "actions": [
+      {
+        "type": "record_call",
+        "config": {
+          "name": "Historisation"
+        }
+      },
+      {
+        "type": "record_call",
+        "config": {
+          "name": "Export données"
+        }
+      }
+    ]
+  },
+  {
+    "id": "blueprint-51",
+    "name": "Restauration - Appel prise de commande",
+    "industry": "restaurant",
+    "description": "Workflow pour Appel prise de commande dans la catégorie Restauration.",
+    "trigger": "call_completed",
+    "actions": [
+      {
+        "type": "voicemail_transcription",
+        "config": {
+          "name": "Transcription"
+        }
+      },
+      {
+        "type": "create_task",
+        "config": {
+          "name": "Création tâche CRM"
+        }
+      }
+    ]
+  },
+  {
+    "id": "blueprint-52",
+    "name": "Restauration - Identification client",
+    "industry": "restaurant",
+    "description": "Workflow pour Identification client dans la catégorie Restauration.",
+    "trigger": "call_completed",
+    "actions": [
+      {
+        "type": "update_lead",
+        "config": {
+          "name": "Tag client"
+        }
+      }
+    ]
+  },
+  {
+    "id": "blueprint-53",
+    "name": "Restauration - Enregistrement commande",
+    "industry": "restaurant",
+    "description": "Workflow pour Enregistrement commande dans la catégorie Restauration.",
+    "trigger": "call_completed",
+    "actions": [
+      {
+        "type": "create_task",
+        "config": {
+          "name": "Créer tâche"
+        }
+      },
+      {
+        "type": "record_call",
+        "config": {
+          "name": "Stockage BD"
+        }
+      }
+    ]
+  },
+  {
+    "id": "blueprint-54",
+    "name": "Restauration - Confirmation commande",
+    "industry": "restaurant",
+    "description": "Workflow pour Confirmation commande dans la catégorie Restauration.",
+    "trigger": "call_completed",
+    "actions": [
+      {
+        "type": "ai_summary",
+        "config": {
+          "name": "SMS/Email"
+        }
+      }
+    ]
+  },
+  {
+    "id": "blueprint-55",
+    "name": "Restauration - Transmission cuisine",
+    "industry": "restaurant",
+    "description": "Workflow pour Transmission cuisine dans la catégorie Restauration.",
+    "trigger": "call_completed",
+    "actions": [
+      {
+        "type": "send_sms",
+        "config": {
+          "name": "Webhook interne"
+        }
+      }
+    ]
+  },
+  {
+    "id": "blueprint-56",
+    "name": "Restauration - Estimation délai",
+    "industry": "restaurant",
+    "description": "Workflow pour Estimation délai dans la catégorie Restauration.",
+    "trigger": "call_completed",
+    "actions": [
+      {
+        "type": "ai_summary",
+        "config": {
+          "name": "Calcul IA"
+        }
+      },
+      {
+        "type": "update_lead",
+        "config": {
+          "name": "Tag délai"
+        }
+      }
+    ]
+  },
+  {
+    "id": "blueprint-57",
+    "name": "Restauration - Mise à jour statut commande",
+    "industry": "restaurant",
+    "description": "Workflow pour Mise à jour statut commande dans la catégorie Restauration.",
+    "trigger": "call_completed",
+    "actions": [
+      {
+        "type": "ai_summary",
+        "config": {
+          "name": "Changer statut"
+        }
+      }
+    ]
+  },
+  {
+    "id": "blueprint-58",
+    "name": "Restauration - Commande annulée",
+    "industry": "restaurant",
+    "description": "Workflow pour Commande annulée dans la catégorie Restauration.",
+    "trigger": "call_completed",
+    "actions": [
+      {
+        "type": "send_sms",
+        "config": {
+          "name": "Notification"
+        }
+      },
+      {
+        "type": "record_call",
+        "config": {
+          "name": "Historisation"
+        }
+      }
+    ]
+  },
+  {
+    "id": "blueprint-59",
+    "name": "Restauration - Commande terminée",
+    "industry": "restaurant",
+    "description": "Workflow pour Commande terminée dans la catégorie Restauration.",
+    "trigger": "call_completed",
+    "actions": [
+      {
+        "type": "record_call",
+        "config": {
+          "name": "Historisation"
+        }
+      }
+    ]
+  },
+  {
+    "id": "blueprint-60",
+    "name": "Restauration - Historisation commande",
+    "industry": "restaurant",
+    "description": "Workflow pour Historisation commande dans la catégorie Restauration.",
+    "trigger": "call_completed",
+    "actions": [
+      {
+        "type": "record_call",
+        "config": {
+          "name": "Log interne"
+        }
+      }
+    ]
+  },
+  {
+    "id": "blueprint-61",
+    "name": "Logistique / Livraison - Création demande livraison",
+    "industry": "delivery",
+    "description": "Workflow pour Création demande livraison dans la catégorie Logistique / Livraison.",
+    "trigger": "call_completed",
+    "actions": [
+      {
+        "type": "create_task",
+        "config": {
+          "name": "Créer tâche CRM"
+        }
+      }
+    ]
+  },
+  {
+    "id": "blueprint-62",
+    "name": "Logistique / Livraison - Attribution livreur",
+    "industry": "delivery",
+    "description": "Workflow pour Attribution livreur dans la catégorie Logistique / Livraison.",
+    "trigger": "call_completed",
+    "actions": [
+      {
+        "type": "ai_summary",
+        "config": {
+          "name": "Changer agent"
+        }
+      }
+    ]
+  },
+  {
+    "id": "blueprint-63",
+    "name": "Logistique / Livraison - Confirmation prise en charge",
+    "industry": "delivery",
+    "description": "Workflow pour Confirmation prise en charge dans la catégorie Logistique / Livraison.",
+    "trigger": "call_completed",
+    "actions": [
+      {
+        "type": "send_sms",
+        "config": {
+          "name": "Notification client"
+        }
+      }
+    ]
+  },
+  {
+    "id": "blueprint-64",
+    "name": "Logistique / Livraison - Suivi statut livraison",
+    "industry": "delivery",
+    "description": "Workflow pour Suivi statut livraison dans la catégorie Logistique / Livraison.",
+    "trigger": "call_completed",
+    "actions": [
+      {
+        "type": "update_lead",
+        "config": {
+          "name": "Mise à jour statut"
+        }
+      }
+    ]
+  },
+  {
+    "id": "blueprint-65",
+    "name": "Logistique / Livraison - Retard détecté",
+    "industry": "delivery",
+    "description": "Workflow pour Retard détecté dans la catégorie Logistique / Livraison.",
+    "trigger": "call_completed",
+    "actions": [
+      {
+        "type": "send_sms",
+        "config": {
+          "name": "Notification client"
+        }
+      }
+    ]
+  },
+  {
+    "id": "blueprint-66",
+    "name": "Logistique / Livraison - Notification client",
+    "industry": "delivery",
+    "description": "Workflow pour Notification client dans la catégorie Logistique / Livraison.",
+    "trigger": "call_completed",
+    "actions": [
+      {
+        "type": "send_sms",
+        "config": {
+          "name": "Notification externe"
+        }
+      }
+    ]
+  },
+  {
+    "id": "blueprint-67",
+    "name": "Logistique / Livraison - Livraison confirmée",
+    "industry": "delivery",
+    "description": "Workflow pour Livraison confirmée dans la catégorie Logistique / Livraison.",
+    "trigger": "call_completed",
+    "actions": [
+      {
+        "type": "update_lead",
+        "config": {
+          "name": "Changement statut"
+        }
+      },
+      {
+        "type": "send_sms",
+        "config": {
+          "name": "Notification"
+        }
+      }
+    ]
+  },
+  {
+    "id": "blueprint-68",
+    "name": "Logistique / Livraison - Échec livraison",
+    "industry": "delivery",
+    "description": "Workflow pour Échec livraison dans la catégorie Logistique / Livraison.",
+    "trigger": "call_completed",
+    "actions": [
+      {
+        "type": "create_task",
+        "config": {
+          "name": "Escalade"
+        }
+      },
+      {
+        "type": "send_sms",
+        "config": {
+          "name": "Notification"
+        }
+      }
+    ]
+  },
+  {
+    "id": "blueprint-69",
+    "name": "Logistique / Livraison - Reprogrammation livraison",
+    "industry": "delivery",
+    "description": "Workflow pour Reprogrammation livraison dans la catégorie Logistique / Livraison.",
+    "trigger": "call_completed",
+    "actions": [
+      {
+        "type": "create_appointment",
+        "config": {
+          "name": "Mise à jour RDV"
+        }
+      },
+      {
+        "type": "send_sms",
+        "config": {
+          "name": "Notification"
+        }
+      }
+    ]
+  },
+  {
+    "id": "blueprint-70",
+    "name": "Logistique / Livraison - Clôture livraison",
+    "industry": "delivery",
+    "description": "Workflow pour Clôture livraison dans la catégorie Logistique / Livraison.",
+    "trigger": "call_completed",
+    "actions": [
+      {
+        "type": "record_call",
+        "config": {
+          "name": "Historisation"
+        }
+      },
+      {
+        "type": "record_call",
+        "config": {
+          "name": "Export données"
+        }
+      }
+    ]
+  },
+  {
+    "id": "blueprint-71",
+    "name": "Admin / Archivage / Data - Clôture workflow",
+    "industry": "generic",
+    "description": "Workflow pour Clôture workflow dans la catégorie Admin / Archivage / Data.",
+    "trigger": "call_completed",
+    "actions": [
+      {
+        "type": "record_call",
+        "config": {
+          "name": "Historisation"
+        }
+      },
+      {
+        "type": "record_call",
+        "config": {
+          "name": "Log interne"
+        }
+      }
+    ]
+  },
+  {
+    "id": "blueprint-72",
+    "name": "Admin / Archivage / Data - Archivage lead",
+    "industry": "generic",
+    "description": "Workflow pour Archivage lead dans la catégorie Admin / Archivage / Data.",
+    "trigger": "call_completed",
+    "actions": [
+      {
+        "type": "record_call",
+        "config": {
+          "name": "Historisation"
+        }
+      },
+      {
+        "type": "record_call",
+        "config": {
+          "name": "Export données"
+        }
+      }
+    ]
+  },
+  {
+    "id": "blueprint-73",
+    "name": "Admin / Archivage / Data - Archivage appel",
+    "industry": "generic",
+    "description": "Workflow pour Archivage appel dans la catégorie Admin / Archivage / Data.",
+    "trigger": "call_completed",
+    "actions": [
+      {
+        "type": "record_call",
+        "config": {
+          "name": "Historisation"
+        }
+      },
+      {
+        "type": "record_call",
+        "config": {
+          "name": "Export données"
+        }
+      }
+    ]
+  },
+  {
+    "id": "blueprint-74",
+    "name": "Admin / Archivage / Data - Historisation CRM",
+    "industry": "generic",
+    "description": "Workflow pour Historisation CRM dans la catégorie Admin / Archivage / Data.",
+    "trigger": "call_completed",
+    "actions": [
+      {
+        "type": "record_call",
+        "config": {
+          "name": "Log interne"
+        }
+      }
+    ]
+  },
+  {
+    "id": "blueprint-75",
+    "name": "Admin / Archivage / Data - Export données",
+    "industry": "generic",
+    "description": "Workflow pour Export données dans la catégorie Admin / Archivage / Data.",
+    "trigger": "call_completed",
+    "actions": [
+      {
+        "type": "record_call",
+        "config": {
+          "name": "Export CSV/Excel"
+        }
+      }
+    ]
+  },
+  {
+    "id": "blueprint-76",
+    "name": "Admin / Archivage / Data - Journal d’activité",
+    "industry": "generic",
+    "description": "Workflow pour Journal d’activité dans la catégorie Admin / Archivage / Data.",
+    "trigger": "call_completed",
+    "actions": [
+      {
+        "type": "record_call",
+        "config": {
+          "name": "Log interne"
+        }
+      }
+    ]
+  },
+  {
+    "id": "blueprint-77",
+    "name": "Intelligence & Règles - Routage intelligent par métier",
+    "industry": "generic",
+    "description": "Workflow pour Routage intelligent par métier dans la catégorie Intelligence & Règles.",
+    "trigger": "call_completed",
+    "actions": [
+      {
+        "type": "ai_summary",
+        "config": {
+          "name": "IF/ELSE"
+        }
+      },
+      {
+        "type": "update_lead",
+        "config": {
+          "name": "Tag métier"
+        }
+      }
+    ]
+  },
+  {
+    "id": "blueprint-78",
+    "name": "Intelligence & Règles - Routage par disponibilité agent",
+    "industry": "generic",
+    "description": "Workflow pour Routage par disponibilité agent dans la catégorie Intelligence & Règles.",
+    "trigger": "call_completed",
+    "actions": [
+      {
+        "type": "ai_summary",
+        "config": {
+          "name": "IF/ELSE"
+        }
+      },
+      {
+        "type": "update_lead",
+        "config": {
+          "name": "Tag agent"
+        }
+      }
+    ]
+  },
+  {
+    "id": "blueprint-79",
+    "name": "Intelligence & Règles - Routage par priorité",
+    "industry": "generic",
+    "description": "Workflow pour Routage par priorité dans la catégorie Intelligence & Règles.",
+    "trigger": "call_completed",
+    "actions": [
+      {
+        "type": "ai_summary",
+        "config": {
+          "name": "IF/ELSE"
+        }
+      },
+      {
+        "type": "update_lead",
+        "config": {
+          "name": "Tag priorité"
+        }
+      }
+    ]
+  },
+  {
+    "id": "blueprint-80",
+    "name": "Intelligence & Règles - Scoring lead IA",
+    "industry": "generic",
+    "description": "Workflow pour Scoring lead IA dans la catégorie Intelligence & Règles.",
+    "trigger": "call_completed",
+    "actions": [
+      {
+        "type": "ai_summary",
+        "config": {
+          "name": "IA"
+        }
+      },
+      {
+        "type": "update_lead",
+        "config": {
+          "name": "Changement statut"
+        }
+      }
+    ]
+  },
+  {
+    "id": "blueprint-81",
+    "name": "Intelligence & Règles - IF / ELSE conditionnel",
+    "industry": "generic",
+    "description": "Workflow pour IF / ELSE conditionnel dans la catégorie Intelligence & Règles.",
+    "trigger": "call_completed",
+    "actions": [
+      {
+        "type": "ai_score",
+        "config": {
+          "name": "Logique"
+        }
+      },
+      {
+        "type": "schedule_followup",
+        "config": {
+          "name": "Temporisation"
+        }
+      }
+    ]
+  },
+  {
+    "id": "blueprint-82",
+    "name": "Intelligence & Règles - Délais & temporisation",
+    "industry": "generic",
+    "description": "Workflow pour Délais & temporisation dans la catégorie Intelligence & Règles.",
+    "trigger": "call_completed",
+    "actions": [
+      {
+        "type": "schedule_followup",
+        "config": {
+          "name": "Temporisation"
+        }
+      },
+      {
+        "type": "send_sms",
+        "config": {
+          "name": "Notification"
+        }
+      }
+    ]
+  },
+  {
+    "id": "blueprint-83",
+    "name": "Cabinet Médical - Prise de RDV",
+    "industry": "medical_practice",
+    "description": "Workflow pour la prise de rendez-vous médicaux.",
+    "trigger": "call_received",
+    "actions": [
+      {
+        "type": "create_appointment"
+      },
+      {
+        "type": "send_sms"
+      }
+    ]
+  },
+  {
+    "id": "blueprint-84",
+    "name": "Cabinet Médical - Rappel RDV",
+    "industry": "medical_practice",
+    "description": "Workflow pour l'envoi de rappels de rendez-vous.",
+    "trigger": "schedule_event",
+    "actions": [
+      {
+        "type": "send_sms"
+      },
+      {
+        "type": "send_email"
+      }
+    ]
+  },
+  {
+    "id": "blueprint-85",
+    "name": "Cabinet Médical - Urgence Médicale",
+    "industry": "medical_practice",
+    "description": "Workflow pour la gestion des appels d'urgence.",
+    "trigger": "call_received",
+    "actions": [
+      {
+        "type": "send_sms"
+      },
+      {
+        "type": "create_task"
+      }
+    ]
+  },
+  {
+    "id": "blueprint-86",
+    "name": "Cabinet Juridique - Consultation Initiale",
+    "industry": "legal_firm",
+    "description": "Workflow pour la planification d'une consultation juridique initiale.",
+    "trigger": "call_received",
+    "actions": [
+      {
+        "type": "create_appointment"
+      },
+      {
+        "type": "ai_summary"
+      }
+    ]
+  },
+  {
+    "id": "blueprint-87",
+    "name": "Cabinet Juridique - Suivi de Dossier",
+    "industry": "legal_firm",
+    "description": "Workflow pour le suivi de l'avancement d'un dossier client.",
+    "trigger": "call_completed",
+    "actions": [
+      {
+        "type": "update_lead"
+      },
+      {
+        "type": "send_email"
+      }
+    ]
+  },
+  {
+    "id": "blueprint-88",
+    "name": "Cabinet Juridique - Rappel de Paiement",
+    "industry": "legal_firm",
+    "description": "Workflow pour l'envoi de rappels de paiement de factures.",
+    "trigger": "schedule_event",
+    "actions": [
+      {
+        "type": "send_email"
+      },
+      {
+        "type": "create_task"
+      }
+    ]
+  },
+  {
+    "id": "blueprint-89",
+    "name": "Infogérance - Support Technique Niveau 1",
+    "industry": "it_services",
+    "description": "Workflow pour la gestion des demandes de support technique de niveau 1.",
+    "trigger": "call_received",
+    "actions": [
+      {
+        "type": "create_task"
+      },
+      {
+        "type": "ai_intent"
+      }
+    ]
+  },
+  {
+    "id": "blueprint-90",
+    "name": "Infogérance - Escalade Incident",
+    "industry": "it_services",
+    "description": "Workflow pour l'escalade d'un incident au niveau supérieur.",
+    "trigger": "task_escalated",
+    "actions": [
+      {
+        "type": "send_sms"
+      },
+      {
+        "type": "create_task"
+      }
+    ]
+  },
+  {
+    "id": "blueprint-91",
+    "name": "Infogérance - Maintenance Préventive",
+    "industry": "it_services",
+    "description": "Workflow pour la planification et la notification de maintenance préventive.",
+    "trigger": "schedule_event",
+    "actions": [
+      {
+        "type": "send_email"
+      },
+      {
+        "type": "create_task"
+      }
+    ]
+  },
+  {
+    "id": "blueprint-92",
+    "name": "Agence Immobilière - Prise de RDV Visite",
+    "industry": "real_estate",
+    "description": "Workflow pour la prise de rendez-vous de visite de biens immobiliers.",
+    "trigger": "call_received",
+    "actions": [
+      {
+        "type": "create_appointment"
+      },
+      {
+        "type": "send_sms"
+      }
+    ]
+  },
+  {
+    "id": "blueprint-93",
+    "name": "Agence Immobilière - Suivi Prospect Acheteur",
+    "industry": "real_estate",
+    "description": "Workflow pour le suivi des prospects acheteurs.",
+    "trigger": "prospect_created",
+    "actions": [
+      {
+        "type": "update_lead"
+      },
+      {
+        "type": "send_email"
+      }
+    ]
+  },
+  {
+    "id": "blueprint-94",
+    "name": "Agence Immobilière - Offre Reçue",
+    "industry": "real_estate",
+    "description": "Workflow pour la notification et le traitement d'une offre reçue.",
+    "trigger": "email_received",
+    "actions": [
+      {
+        "type": "send_sms"
+      },
+      {
+        "type": "create_task"
+      }
+    ]
+  },
+  {
+    "id": "blueprint-95",
+    "name": "E-commerce - Confirmation Commande",
+    "industry": "e_commerce",
+    "description": "Workflow pour l'envoi de la confirmation de commande.",
+    "trigger": "order_placed",
+    "actions": [
+      {
+        "type": "send_email"
+      }
+    ]
+  },
+  {
+    "id": "blueprint-96",
+    "name": "E-commerce - Suivi Livraison",
+    "industry": "e_commerce",
+    "description": "Workflow pour le suivi de l'état de la livraison.",
+    "trigger": "order_shipped",
+    "actions": [
+      {
+        "type": "send_sms"
+      },
+      {
+        "type": "update_lead"
+      }
+    ]
+  },
+  {
+    "id": "blueprint-97",
+    "name": "E-commerce - Support Client Post-Achat",
+    "industry": "e_commerce",
+    "description": "Workflow pour la gestion des demandes de support après achat.",
+    "trigger": "call_received",
+    "actions": [
+      {
+        "type": "create_task"
+      },
+      {
+        "type": "ai_summary"
+      }
+    ]
+  },
+  {
+    "id": "blueprint-98",
+    "name": "Centre d'Appels - Qualification Appel Entrant",
+    "industry": "call_center",
+    "description": "Workflow pour la qualification des appels entrants.",
+    "trigger": "call_received",
+    "actions": [
+      {
+        "type": "ai_intent"
+      },
+      {
+        "type": "create_task"
+      }
+    ]
+  },
+  {
+    "id": "blueprint-99",
+    "name": "Centre d'Appels - Enquête Satisfaction",
+    "industry": "call_center",
+    "description": "Workflow pour l'envoi d'une enquête de satisfaction après appel.",
+    "trigger": "call_completed",
+    "actions": [
+      {
+        "type": "send_sms"
+      }
+    ]
+  },
+  {
+    "id": "blueprint-100",
+    "name": "Centre d'Appels - Formation Agent",
+    "industry": "call_center",
+    "description": "Workflow pour l'assignation de modules de formation aux agents.",
+    "trigger": "agent_performance_review",
+    "actions": [
+      {
+        "type": "create_task"
+      },
+      {
+        "type": "send_email"
+      }
+    ]
+  }
+]

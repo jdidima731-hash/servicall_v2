@@ -1,0 +1,41 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1771168409018,
+      "tag": "0000_freezing_quicksilver",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1771254000000,
+      "tag": "0001_add_business_configuration",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1771255200000,
+      "tag": "0002_add_pos_config_and_vat",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1771263360000,
+      "tag": "0003_add_recruitment_module",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1771350000000,
+      "tag": "0005_add_recruitment_enhancements",
+      "breakpoints": true
+    }
+  ]
+}
