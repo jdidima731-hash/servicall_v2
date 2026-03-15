@@ -49,4 +49,4 @@ export const criticalLogger = {
       // Implémenter l'envoi d'alertes
     }
   }
-};
+}

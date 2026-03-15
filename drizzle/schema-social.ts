@@ -102,4 +102,5 @@ export const socialComments = pgTable("social_comments", {
   postIdIdx: index("idx_social_comments_post_id").on(table.postId),
   tenantIdIdx: index("idx_social_comments_tenant_id").on(table.tenantId),
   platformCommentIdx: uniqueIndex("idx_social_comments_platform_id").on(table.platformCommentId),
-}));
+}
+))

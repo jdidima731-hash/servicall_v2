@@ -25,4 +25,3 @@ For tasks with branching logic, guide Manus through decision points:
 
 2. Creation workflow: [steps]
 3. Editing workflow: [steps]
-```

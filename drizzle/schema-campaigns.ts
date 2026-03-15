@@ -56,4 +56,5 @@ export const campaignProspectsRelations = relations(campaignProspects, ({ one })
     fields: [campaignProspects.prospectId],
     references: [prospects.id],
   }),
-}));
+}
+))

@@ -142,3 +142,4 @@ export class CalendarSyncAction {
 }
 
 export default CalendarSyncAction;
+}}

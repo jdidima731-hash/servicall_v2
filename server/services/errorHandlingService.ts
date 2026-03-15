@@ -90,4 +90,4 @@ export function handleAppError(
  */
 export const logError = (error: unknown, context: unknown) => {
   handleAppError(error, context);
-};
+}

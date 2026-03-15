@@ -32,7 +32,6 @@ async function testRestaurantWorkflow() {
 
   try {
     // ============================================
-    // ÉTAPE 1: Initialisation de la conversation
     // ============================================
     logger.info("📞 Step 1: Initializing conversation...");
     const initResult = await engine.initializeConversation(callId, scenario, tenantId, prospectId);
@@ -41,7 +40,6 @@ async function testRestaurantWorkflow() {
     logger.info();
 
     // ============================================
-    // ÉTAPE 2: Simulation de l'intention de commander
     // ============================================
     logger.info("👤 Step 2: User says: 'Je voudrais commander une pizza'");
     let result = await engine.processInput(
@@ -60,7 +58,6 @@ async function testRestaurantWorkflow() {
     logger.info();
 
     // ============================================
-    // ÉTAPE 3: Identification du client
     // ============================================
     logger.info("👤 Step 3: User provides phone number: '0612345678'");
     result = await engine.processInput(
@@ -78,7 +75,6 @@ async function testRestaurantWorkflow() {
     logger.info();
 
     // ============================================
-    // ÉTAPE 4: Extraction intelligente de la commande
     // ============================================
     logger.info("🧠 Step 4: Testing NER (Named Entity Recognition) for menu items...");
     const userOrderText = "Je voudrais deux pizzas Margherita et une Carbonara, s'il vous plaît";

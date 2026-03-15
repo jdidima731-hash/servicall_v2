@@ -78,4 +78,4 @@ export const requireOrganization = async (req: Request, res: Response, next: Nex
   }
 
   next();
-};
+}

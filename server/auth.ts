@@ -109,4 +109,4 @@ export const setupAuth = (app: any) => {
   app.locals.generateToken = (userId: string) => {
     return jwt.sign({ sub: userId }, config.jwtSecret, { expiresIn: '7d' });
   };
-};
+}

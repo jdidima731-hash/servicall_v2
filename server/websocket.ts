@@ -96,4 +96,4 @@ export const setupWebSocket = (io: Server, db: any) => {
       logger.error('Erreur lors de la récupération des stats:', error);
     }
   }, 30000);
-};
+}

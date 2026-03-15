@@ -111,4 +111,4 @@ export {
   TableRow,
   TableCell,
   TableCaption,
-};
+}

@@ -54,4 +54,4 @@ export const CallTransferControl: React.FC<CallTransferControlProps> = ({
       </DropdownMenu>
     </div>
   );
-};
+}

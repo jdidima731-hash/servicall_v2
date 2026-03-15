@@ -150,4 +150,4 @@ export const jobQueue = {
     const { desc } = await import('drizzle-orm');
     return await db.select().from(failedJobs).orderBy(desc(failedJobs.createdAt)).limit(limit);
   }
-};
+}

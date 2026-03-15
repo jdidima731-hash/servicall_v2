@@ -56,4 +56,4 @@ export const notFoundHandler = (req: Request, res: Response) => {
     path: req.path,
     method: req.method
   });
-};
+}

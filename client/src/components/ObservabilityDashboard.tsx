@@ -177,4 +177,4 @@ export const ObservabilityDashboard: React.FC = () => {
       </div>
     </div>
   );
-};
+}

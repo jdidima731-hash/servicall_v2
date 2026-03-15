@@ -214,4 +214,4 @@ export const BusinessIntelligenceDashboard: React.FC = () => {
       </div>
     </div>
   );
-};
+}

@@ -45,4 +45,4 @@ export const monitoringMiddleware = async (opts: unknown) => {
 
     throw error;
   }
-};
+}

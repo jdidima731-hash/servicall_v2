@@ -110,4 +110,4 @@ export const errorMapper = {
     statusCode: 503,
     isRetryable: true
   })
-};
+}

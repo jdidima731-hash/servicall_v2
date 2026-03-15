@@ -67,4 +67,3 @@ docker-compose up -d
 📝 Licence
 Propriétaire - Tous droits réservés
 
-text

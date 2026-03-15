@@ -171,4 +171,4 @@ export const IAMonitoringDashboard: React.FC = () => {
       </div>
     </div>
   );
-};
+}

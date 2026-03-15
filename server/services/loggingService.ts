@@ -170,4 +170,4 @@ export const requestLogger = (req: unknown, res: unknown, next: unknown) => {
 
     next();
   });
-};
+}

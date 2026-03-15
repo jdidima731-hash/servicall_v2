@@ -22,4 +22,5 @@ export const useCallStore = create<CallState>((set) => ({
   initiateCall: (context) => set({ pendingCall: context, isSoftphoneOpen: true }),
   clearPendingCall: () => set({ pendingCall: null }),
   setSoftphoneOpen: (open) => set({ isSoftphoneOpen: open }),
-}));
+}
+))

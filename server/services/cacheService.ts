@@ -103,4 +103,4 @@ export const CACHE_TTL = {
   WORKFLOWS: 3600,
   DASHBOARD: 300,
   CONFIG: 86400,
-};
+}

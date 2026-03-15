@@ -75,4 +75,4 @@ export const ONBOARDING_STEPS = {
   CREATE_PROSPECT: "Commencez par ici pour ajouter votre premier client potentiel.",
   WORKFLOW_AUTOMATION: "Automatisez vos tâches répétitives en créant votre premier workflow ici.",
   SOFTPHONE_READY: "Votre téléphone est prêt. Vous pouvez passer des appels en un clic.",
-};
+}

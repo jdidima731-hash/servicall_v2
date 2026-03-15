@@ -163,7 +163,3 @@ export type NewUser = typeof users.$inferInsert;
 export type Organization = typeof organizations.$inferSelect;
 export type Call = typeof calls.$inferSelect;
 export type Skill = typeof skills.$inferSelect;
-[CONTINUÉ DANS LE PROCHAIN MESSAGE]
-
-Ui
-Je continue avec la suite des fichiers :

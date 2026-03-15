@@ -91,7 +91,6 @@ async function processVoiceJob(
     hasTranscription: !!job.data.transcription,
   });
 
-  // ─── ÉTAPE 1 : ASR ──────────────────────────────────────────────────────────
   let transcription = job.data.transcription ?? "";
 
   if (!transcription && audioChunk) {
@@ -125,7 +124,6 @@ async function processVoiceJob(
     logger.info("[VoiceWorker] ASR completed", { callId, transcription: transcription.substring(0, 50) });
   }
 
-  // ─── ÉTAPE 2 : DialogueEngine (LLM + Router d'actions) ──────────────────────
   await job.updateProgress(40);
   logger.debug("[VoiceWorker] Step 2: DialogueEngine", { callId });
 
@@ -140,7 +138,6 @@ async function processVoiceJob(
     hasResponse: !!aiResponse,
   });
 
-  // ─── ÉTAPE 3 : TTS ──────────────────────────────────────────────────────────
   await job.updateProgress(70);
   logger.debug("[VoiceWorker] Step 3: TTS", { callId });
 

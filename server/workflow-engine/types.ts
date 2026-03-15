@@ -1,4 +1,3 @@
-
 import type { tenants, workflows, prospects, calls } from '../../drizzle/schema';
 
 // 1. Types de base depuis le schéma Drizzle

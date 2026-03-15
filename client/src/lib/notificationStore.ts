@@ -187,4 +187,4 @@ export const notifyWarning = (title: string, message: string, category: Notifica
     message,
     actionUrl,
   });
-};
+}

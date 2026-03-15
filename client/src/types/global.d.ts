@@ -1,4 +1,3 @@
-
 // Types globaux pour résoudre les erreurs TypeScript
 
 declare module '*.svg' {

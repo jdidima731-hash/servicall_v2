@@ -51,4 +51,4 @@ export const createError = (message: string, statusCode: number = 400, code: str
   error.code = code;
   error.details = details;
   return error;
-};
+}

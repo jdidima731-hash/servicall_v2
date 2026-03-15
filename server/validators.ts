@@ -484,4 +484,4 @@ export const secureUpdateProspectSchema = z.object({
   {
     message: "❌ SECURITY: tenantId injection detected",
   }
-);
+)

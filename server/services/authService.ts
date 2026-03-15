@@ -109,4 +109,4 @@ export const AuthService = {
 
     return { user: authenticatedUser, tenantId: authenticatedUser.tenantId };
   },
-};
+}

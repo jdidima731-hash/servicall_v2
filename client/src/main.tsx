@@ -39,4 +39,4 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
       {process.env.NODE_ENV === 'development' && <ReactQueryDevtools />}
     </QueryClientProvider>
   </React.StrictMode>
-);
+)

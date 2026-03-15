@@ -270,4 +270,5 @@ export const enrollments = pgTable("enrollments", {
 }, (table) => ({
   tenantIdIdx: index("idx_enroll_tenant_id").on(table.tenantId),
   courseIdx: index("idx_enroll_course").on(table.courseName),
-}));
+}
+))

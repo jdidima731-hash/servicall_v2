@@ -148,4 +148,4 @@ export const AgentAssist: React.FC<AgentAssistProps> = ({
       </CardContent>
     </Card>
   );
-};
+}

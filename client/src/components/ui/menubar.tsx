@@ -271,4 +271,4 @@ export {
   MenubarSub,
   MenubarSubTrigger,
   MenubarSubContent,
-};
+}

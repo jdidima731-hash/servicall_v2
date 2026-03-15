@@ -144,7 +144,6 @@ export class OpenAIRetryService {
         // Si c'est un buffer, le convertir en fichier
         const file = typeof audioFile === 'string' 
           ? audioFile 
-          : new File([new Uint8Array(audioFile)], 'audio.mp3', { type: 'audio/mpeg' });
 
         return await this.openai.audio.transcriptions.create({
           file: file as unknown,

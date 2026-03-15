@@ -62,4 +62,4 @@ export const config = {
   enableAnalytics: process.env.ENABLE_ANALYTICS !== 'false',
   enableWebsockets: process.env.ENABLE_WEBSOCKETS !== 'false',
   enableFileUploads: process.env.ENABLE_FILE_UPLOADS !== 'false',
-};
+}

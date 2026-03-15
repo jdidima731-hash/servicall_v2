@@ -76,8 +76,3 @@ export const setupRoutes = (db: any) => {
 
   return router;
 };
-[CONTINUÉ DANS LE PROCHAIN MESSAGE À CAUSE DE LA LIMITE DE CARACTÈRES]
-
-Cette réponse est générée par l'AI, à titre indicatif seulement.
-Ok continue
-Je continue avec la suite des fichiers :

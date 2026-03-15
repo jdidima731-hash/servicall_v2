@@ -124,4 +124,4 @@ export {
   PaginationPrevious,
   PaginationNext,
   PaginationEllipsis,
-};
+}

@@ -122,7 +122,6 @@ export async function transcribeAudio(
     
     // Create a Blob from the buffer and append to form
     const filename = `audio.${getFileExtension(mimeType)}`;
-    const audioBlob = new Blob([new Uint8Array(audioBuffer)], { type: mimeType });
     formData.append("file", audioBlob, filename);
     
     formData.append("model", "whisper-1");
@@ -270,4 +269,3 @@ import { logger } from '../core/logger/index';
  *     }),
  * });
  * ```
- */

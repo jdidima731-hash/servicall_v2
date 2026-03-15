@@ -24,7 +24,6 @@ async function testHotelWorkflow() {
 
   try {
     // ============================================
-    // ÉTAPE 1: Initialisation de la conversation
     // ============================================
     logger.info("📞 Step 1: Initializing conversation...");
     const initResult = await engine.initializeConversation(callId, scenario, tenantId, prospectId);
@@ -33,7 +32,6 @@ async function testHotelWorkflow() {
     logger.info();
 
     // ============================================
-    // ÉTAPE 2: Simulation de l'intention de réserver
     // ============================================
     logger.info("👤 Step 2: User says: 'Je voudrais réserver une chambre'");
     let result = await engine.processInput(
@@ -51,7 +49,6 @@ async function testHotelWorkflow() {
     logger.info();
 
     // ============================================
-    // ÉTAPE 3: Collecte des dates
     // ============================================
     logger.info("👤 Step 3: User provides dates: 'Du 15 au 20 décembre'");
     result = await engine.processInput(
@@ -70,7 +67,6 @@ async function testHotelWorkflow() {
     logger.info();
 
     // ============================================
-    // ÉTAPE 4: Collecte du type de chambre
     // ============================================
     logger.info("👤 Step 4: User chooses room type: 'Une suite pour 2 personnes'");
     result = await engine.processInput(
