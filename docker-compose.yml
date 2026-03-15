@@ -1,0 +1,85 @@
+yaml
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: servicall-postgres
+    environment:
+      POSTGRES_USER: servicall
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-servicall123}
+      POSTGRES_DB: servicall
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U servicall"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - servicall-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: servicall-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - servicall-network
+
+  app:
+    build: .
+    container_name: servicall-app
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgresql://servicall:${DB_PASSWORD:-servicall123}@postgres:5432/servicall
+      REDIS_URL: redis://redis:6379
+      JWT_SECRET: ${JWT_SECRET}
+      SESSION_SECRET: ${SESSION_SECRET}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - uploads:/app/uploads
+    networks:
+      - servicall-network
+    restart: unless-stopped
+
+  nginx:
+    image: nginx:alpine
+    container_name: servicall-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./ssl:/etc/nginx/ssl
+      - ./public:/usr/share/nginx/html
+    depends_on:
+      - app
+    networks:
+      - servicall-network
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  redis_data:
+  uploads:
+
+networks:
+  servicall-network:
+    driver: bridge

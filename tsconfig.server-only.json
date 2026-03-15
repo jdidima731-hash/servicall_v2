@@ -1,17 +1,15 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "noUnusedLocals": false,
-    "noUnusedParameters": false,
-    "noImplicitReturns": false
+    "noEmit": false,
+    "outDir": "dist/server",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "target": "ES2022",
+    "lib": ["ES2022"],
+    "jsx": "react",
+    "allowImportingTsExtensions": false
   },
-  "include": [
-    "server/**/*",
-    "drizzle/**/*",
-    "shared/**/*"
-  ],
-  "exclude": [
-    "client/**/*",
-    "node_modules"
-  ]
+  "include": ["server/**/*", "shared/**/*"],
+  "exclude": ["client"]
 }

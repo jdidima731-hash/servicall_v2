@@ -1,0 +1,360 @@
+yaml
+openapi: 3.0.0
+info:
+  title: Servicall API
+  version: 2.0.0
+  description: API de gestion d'appels et services professionnels
+  contact:
+    email: support@servicall.com
+  license:
+    name: Propriétaire
+
+servers:
+  - url: https://api.servicall.com/v2
+    description: Production
+  - url: https://staging-api.servicall.com/v2
+    description: Staging
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    rateLimit:
+      type: apiKey
+      in: header
+      name: X-RateLimit-Limit
+
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        email:
+          type: string
+          format: email
+        fullName:
+          type: string
+        role:
+          type: string
+          enum: [user, admin, superadmin]
+        isActive:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+
+    Call:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        callerId:
+          type: string
+        recipientId:
+          type: string
+        status:
+          type: string
+          enum: [pending, in-progress, completed, failed]
+        duration:
+          type: integer
+        recording:
+          type: string
+          format: uri
+        createdAt:
+          type: string
+          format: date-time
+
+    Error:
+      type: object
+      properties:
+        code:
+          type: integer
+        message:
+          type: string
+        details:
+          type: object
+
+  responses:
+    UnauthorizedError:
+      description: Non autorisé
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFoundError:
+      description: Ressource non trouvée
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+paths:
+  /auth/register:
+    post:
+      summary: Inscription utilisateur
+      tags: [Authentication]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                  format: password
+                  minLength: 8
+                fullName:
+                  type: string
+                phone:
+                  type: string
+      responses:
+        201:
+          description: Utilisateur créé
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        400:
+          description: Données invalides
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        409:
+          description: Email déjà utilisé
+
+  /auth/login:
+    post:
+      summary: Connexion
+      tags: [Authentication]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                  format: password
+                mfaCode:
+                  type: string
+                  pattern: '^[0-9]{6}$'
+      responses:
+        200:
+          description: Connexion réussie
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+                example: sessionId=abc123; HttpOnly; Secure
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                  user:
+                    $ref: '#/components/schemas/User'
+        401:
+          description: Authentification échouée
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /auth/me:
+    get:
+      summary: Profil utilisateur
+      tags: [Authentication]
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: Profil utilisateur
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+
+  /calls:
+    get:
+      summary: Liste des appels
+      tags: [Calls]
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: status
+          schema:
+            type: string
+            enum: [pending, in-progress, completed, failed]
+        - in: query
+          name: from
+          schema:
+            type: string
+            format: date-time
+        - in: query
+          name: to
+          schema:
+            type: string
+            format: date-time
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            default: 50
+            maximum: 100
+        - in: query
+          name: offset
+          schema:
+            type: integer
+            default: 0
+      responses:
+        200:
+          description: Liste des appels
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Call'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+
+    post:
+      summary: Créer un appel
+      tags: [Calls]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - recipientId
+              properties:
+                recipientId:
+                  type: string
+                notes:
+                  type: string
+      responses:
+        201:
+          description: Appel créé
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Call'
+        400:
+          description: Données invalides
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+
+  /calls/{id}:
+    get:
+      summary: Détails d'un appel
+      tags: [Calls]
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        200:
+          description: Détails de l'appel
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Call'
+        404:
+          $ref: '#/components/responses/NotFoundError'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+
+    patch:
+      summary: Mettre à jour un appel
+      tags: [Calls]
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  enum: [pending, in-progress, completed, failed]
+                notes:
+                  type: string
+                duration:
+                  type: integer
+      responses:
+        200:
+          description: Appel mis à jour
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Call'
+        404:
+          $ref: '#/components/responses/NotFoundError'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+
+  /health:
+    get:
+      summary: Health check
+      tags: [System]
+      responses:
+        200:
+          description: Système opérationnel
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: healthy
+                  timestamp:
+                    type: string
+                    format: date-time
+                  environment:
+                    type: string
+                  uptime:
+                    type: number
+FICHIER FINAL : Script d'installation automatique

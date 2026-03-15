@@ -1,141 +1,96 @@
-import { useState } from "react";
-import { useAuth } from "@/_core/hooks/useAuth";
-import { trpc } from "@/lib/trpc";
-import { Card } from "@/components/ui/card";
-import { LoadingStateEnhanced } from "@/components/LoadingStateEnhanced";
-import { ErrorStateEnhanced } from "@/components/ErrorStateEnhanced";
+import React from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { PhoneIcon, UserGroupIcon, ClockIcon, ChartBarIcon } from '@heroicons/react/24/outline';
+import { api } from '../services/api';
 
-import { 
-  Building2,
-  DollarSign,
-  Smile,
-  Calendar,
-  LayoutDashboard,
-  Settings2,
-  Activity,
-  CheckCircle2
-} from "lucide-react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { CRMStateTable } from "@/components/CRMStateTable";
-import { AIWorkflowConfig } from "@/components/AIWorkflowConfig";
-import { RealTimeWorkflowMonitor } from "@/components/RealTimeWorkflowMonitor";
+const stats = [
+  { name: 'Appels aujourd\'hui', value: '12', icon: PhoneIcon, change: '+2', changeType: 'increase' },
+  { name: 'Durée totale', value: '3h 24m', icon: ClockIcon, change: '+12%', changeType: 'increase' },
+  { name: 'Clients contactés', value: '8', icon: UserGroupIcon, change: '-1', changeType: 'decrease' },
+  { name: 'Taux de réponse', value: '94%', icon: ChartBarIcon, change: '+4%', changeType: 'increase' },
+];
 
-export default function DashboardFixed() {
-  // const {_t} = useTranslation(['dashboard', 'common']);
-  const { user, loading: authLoading } = useAuth();
-  const [activeTab, setActiveTab] = useState("crm-state");
-  
-  const tenantId = user?.tenantId || 0;
-
-  const { 
-    data: dashboardDataRaw, 
-    isPending: dashboardLoading, 
-    isError: dashboardError,
-    refetch 
-  } = trpc.dashboard.getManagerDashboard.useQuery(
-    { timeRange: "week" },
-    { enabled: tenantId > 0, retry: 1 }
-  );
-
-  const dashboardData = dashboardDataRaw as any;
-
-  if (authLoading || dashboardLoading) {
-    return (
-      <div className="p-8 space-y-6">
-        <LoadingStateEnhanced variant="skeleton" skeletonCount={4} />
-      </div>
-    );
-  }
-
-  if (dashboardError) {
-    return (
-      <div className="p-8">
-        <ErrorStateEnhanced onRetry={() => refetch()} />
-      </div>
-    );
-  }
+export default function Dashboard() {
+  const { data: recentCalls, isLoading } = useQuery({
+    queryKey: ['recentCalls'],
+    queryFn: () => api.get('/calls?limit=5').then(res => res.data),
+  });
 
   return (
-    <div className="p-8 space-y-8 animate-fade-in bg-slate-50/50 min-h-screen">
-      {/* Header Unifié */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-4xl font-black tracking-tight text-slate-900">ServiceCall <span className="text-primary">SaaS</span></h1>
-          <p className="text-muted-foreground font-medium">Plateforme IA Autonome & Supervision Live</p>
-        </div>
-        <div className="flex items-center gap-3 bg-white p-1.5 rounded-2xl shadow-sm border border-slate-200">
-          <div className="flex items-center gap-2 px-3 py-1.5 bg-green-500/10 rounded-xl border border-green-500/20">
-            <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-            <span className="text-xs font-bold text-green-700 uppercase tracking-wider">IA Active</span>
+    <div>
+      <h1 className="text-2xl font-semibold text-gray-900">Dashboard</h1>
+      
+      {/* Stats */}
+      <div className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        {stats.map((stat) => (
+          <div key={stat.name} className="bg-white overflow-hidden shadow rounded-lg">
+            <div className="p-5">
+              <div className="flex items-center">
+                <div className="flex-shrink-0">
+                  <stat.icon className="h-6 w-6 text-gray-400" />
+                </div>
+                <div className="ml-5 w-0 flex-1">
+                  <dl>
+                    <dt className="text-sm font-medium text-gray-500 truncate">{stat.name}</dt>
+                    <dd>
+                      <div className="text-lg font-medium text-gray-900">{stat.value}</div>
+                    </dd>
+                  </dl>
+                </div>
+              </div>
+            </div>
+            <div className="bg-gray-50 px-5 py-3">
+              <div className="text-sm">
+                <span className={`font-medium ${stat.changeType === 'increase' ? 'text-green-600' : 'text-red-600'}`}>
+                  {stat.change}
+                </span>
+                <span className="text-gray-500"> vs hier</span>
+              </div>
+            </div>
           </div>
-          <div className="h-4 w-px bg-slate-200" />
-          <div className="px-3 py-1.5">
-            <span className="text-xs font-medium text-slate-500">Tenant: <span className="text-slate-900 font-bold">Demo</span></span>
-          </div>
-        </div>
+        ))}
       </div>
 
-      {/* Navigation Principale par Onglets */}
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8">
-        <TabsList className="bg-slate-200/50 p-1.5 rounded-2xl border border-slate-200 w-fit">
-          <TabsTrigger value="crm-state" className="gap-2 px-6 py-2.5 rounded-xl data-[state=active]:bg-white data-[state=active]:shadow-md transition-all">
-            <CheckCircle2 className="w-4 h-4" />
-            <span className="font-bold">État CRM</span>
-          </TabsTrigger>
-          <TabsTrigger value="monitoring" className="gap-2 px-6 py-2.5 rounded-xl data-[state=active]:bg-white data-[state=active]:shadow-md transition-all">
-            <Activity className="w-4 h-4" />
-            <span className="font-bold">Live Monitoring</span>
-          </TabsTrigger>
-          <TabsTrigger value="config" className="gap-2 px-6 py-2.5 rounded-xl data-[state=active]:bg-white data-[state=active]:shadow-md transition-all">
-            <Settings2 className="w-4 h-4" />
-            <span className="font-bold">Configuration IA</span>
-          </TabsTrigger>
-          <TabsTrigger value="analytics" className="gap-2 px-6 py-2.5 rounded-xl data-[state=active]:bg-white data-[state=active]:shadow-md transition-all">
-            <LayoutDashboard className="w-4 h-4" />
-            <span className="font-bold">Analytique</span>
-          </TabsTrigger>
-        </TabsList>
-
-        {/* Contenu : État CRM (Centralisé) */}
-        <TabsContent value="crm-state" className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-          <CRMStateTable />
-        </TabsContent>
-
-        {/* Contenu : Live Monitoring */}
-        <TabsContent value="monitoring" className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-          <RealTimeWorkflowMonitor />
-        </TabsContent>
-
-        {/* Contenu : Configuration IA (Workflow IA) */}
-        <TabsContent value="config" className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-          <AIWorkflowConfig />
-        </TabsContent>
-
-        {/* Contenu : Analytique (KPIs existants) */}
-        <TabsContent value="analytics" className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {(dashboardData as any)?.kpis?.map((kpi: any, i: number) => (
-              <Card key={i} className="p-6 border-none shadow-sm hover:shadow-md transition-all bg-white">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-bold text-slate-500 uppercase tracking-wider">{kpi.label}</p>
-                    <div className="flex items-baseline gap-1 mt-2">
-                      <span className="text-3xl font-black text-slate-900">{kpi.value}</span>
-                      <span className="text-sm font-bold text-slate-400">{kpi.unit}</span>
+      {/* Recent calls */}
+      <div className="mt-8">
+        <h2 className="text-lg font-medium text-gray-900">Appels récents</h2>
+        <div className="mt-4 bg-white shadow overflow-hidden sm:rounded-md">
+          <ul className="divide-y divide-gray-200">
+            {isLoading ? (
+              <li className="px-6 py-4 text-center text-gray-500">Chargement...</li>
+            ) : recentCalls?.length === 0 ? (
+              <li className="px-6 py-4 text-center text-gray-500">Aucun appel récent</li>
+            ) : (
+              recentCalls?.map((call: any) => (
+                <li key={call.id} className="px-6 py-4 hover:bg-gray-50">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center">
+                      <PhoneIcon className="h-5 w-5 text-gray-400" />
+                      <div className="ml-3">
+                        <p className="text-sm font-medium text-gray-900">{call.callerId}</p>
+                        <p className="text-sm text-gray-500">vers {call.recipientId}</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center">
+                      <span className={`px-2 py-1 text-xs font-medium rounded-full ${
+                        call.status === 'completed' ? 'bg-green-100 text-green-800' :
+                        call.status === 'in-progress' ? 'bg-yellow-100 text-yellow-800' :
+                        'bg-red-100 text-red-800'
+                      }`}>
+                        {call.status === 'completed' ? 'Terminé' :
+                         call.status === 'in-progress' ? 'En cours' : 'En attente'}
+                      </span>
+                      <span className="ml-3 text-sm text-gray-500">
+                        {new Date(call.createdAt).toLocaleString()}
+                      </span>
                     </div>
                   </div>
-                  <div className={`p-4 rounded-2xl ${kpi.color} shadow-inner`}>
-                    {kpi.icon === "building" && <Building2 className="w-6 h-6" />}
-                    {kpi.icon === "dollar" && <DollarSign className="w-6 h-6" />}
-                    {kpi.icon === "smile" && <Smile className="w-6 h-6" />}
-                    {kpi.icon === "calendar" && <Calendar className="w-6 h-6" />}
-                  </div>
-                </div>
-              </Card>
-            ))}
-          </div>
-        </TabsContent>
-      </Tabs>
+                </li>
+              ))
+            )}
+          </ul>
+        </div>
+      </div>
     </div>
   );
 }

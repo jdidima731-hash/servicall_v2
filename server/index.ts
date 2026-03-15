@@ -1,122 +1,183 @@
-import express from "express";
-import { createServer } from "http";
-import { WebSocketServer, WebSocket } from "ws";
-import { logger } from "./infrastructure/logger";
-import { RealtimeVoicePipeline } from "./services/realtimeVoicePipeline";
-import { appRouter } from "./routers";
-import { createExpressMiddleware } from "@trpc/server/adapters/express";
-import { createContext } from "./_core/context";
+import express from 'express';
+import http from 'http';
+import { Server } from 'socket.io';
+import cors from 'cors';
+import helmet from 'helmet';
+import compression from 'compression';
+import rateLimit from 'express-rate-limit';
+import session from 'express-session';
+import passport from 'passport';
+import { drizzle } from 'drizzle-orm/neon-http';
+import { neon } from '@neondatabase/serverless';
+import * as Sentry from '@sentry/node';
+import { pinoHttp } from 'pino-http';
+import dotenv from 'dotenv';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
 
+// Load environment variables
+dotenv.config();
+
+// Import configurations
+import { setupAuth } from './auth.js';
+import { setupRoutes } from './routes.js';
+import { setupWebSocket } from './websocket.js';
+import { errorHandler } from './middleware/errorHandler.js';
+import { requestLogger } from './middleware/requestLogger.js';
+import { logger } from './utils/logger.js';
+import { config } from './config.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+// Initialisation
 const app = express();
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-
-// tRPC middleware
-app.use(
-  '/api/trpc',
-  createExpressMiddleware({
-    router: appRouter,
-    createContext,
-  })
-);
-
-const server = createServer(app);
-const wss = new WebSocketServer({ server, path: '/voice-stream' });
-
-/**
- * Robust WebSocket Session Management
- * Prevents OOM (Out Of Memory) by cleaning up resources automatically.
- */
-const activeSessions = new Map<string, RealtimeVoicePipeline>();
-
-wss.on('connection', (ws: WebSocket) => {
-  let callId: string | null = null;
-  let pipeline: RealtimeVoicePipeline | null = null;
-
-  logger.info('[WebSocket] New connection established');
-
-  ws.on('message', async (message: string) => {
-    try {
-      const data = JSON.parse(message);
-
-      switch (data.event) {
-        case 'start':
-          callId = data.start.callSid;
-          const streamSid = data.start.streamSid;
-          
-          logger.info('[WebSocket] Call started', { callId, streamSid });
-
-          // Initialize Voice Pipeline
-          pipeline = new RealtimeVoicePipeline(ws, {
-            callId: callId!,
-            streamSid: streamSid,
-            callSid: callId!,
-            tenantId: data.start.customParameters?.tenantId ?? 1,
-          });
-
-          activeSessions.set(callId!, pipeline);
-          await pipeline.start();
-          break;
-
-        case 'media':
-          if (pipeline) {
-            await pipeline.processAudio(data.media.payload);
-          }
-          break;
-
-        case 'stop':
-          logger.info('[WebSocket] Call stopped', { callId });
-          cleanupSession(callId);
-          break;
-      }
-    } catch (error: unknown) {
-      logger.error('[WebSocket] Error processing message', { error });
-    }
-  });
-
-  ws.on('close', () => {
-    logger.info('[WebSocket] Connection closed', { callId });
-    cleanupSession(callId);
-  });
-
-  ws.on('error', (error) => {
-    logger.error('[WebSocket] Connection error', { callId, error });
-    cleanupSession(callId);
-  });
-
-  /**
-   * Cleanup Session and Resources
-   * Essential for VPS stability with limited memory.
-   */
-  function cleanupSession(id: string | null) {
-    if (id && activeSessions.has(id)) {
-      const p = activeSessions.get(id);
-      if (p) {
-        p.stop().catch(e => logger.error('Error stopping pipeline', e));
-      }
-      activeSessions.delete(id);
-      logger.info('[WebSocket] Session cleaned up', { callId: id });
-    }
-    
-    // Force garbage collection if available (requires --expose-gc)
-    if (global.gc) {
-      global.gc();
-    }
-  }
+const server = http.createServer(app);
+const io = new Server(server, {
+  cors: { 
+    origin: config.corsOrigin.split(','), 
+    credentials: true 
+  },
+  transports: ['websocket', 'polling']
 });
 
-// Periodic cleanup of stale sessions (safety net)
-setInterval(() => {
-  // Monitor memory usage
-  const memoryUsage = process.memoryUsage();
-  if (memoryUsage.heapUsed > 500 * 1024 * 1024) { // 500MB threshold
-    logger.warn('[System] High memory usage detected, performing emergency cleanup', {
-      heapUsed: Math.round(memoryUsage.heapUsed / 1024 / 1024) + 'MB'
-    });
-  }
-}, 60000);
+// Sentry (monitoring)
+if (config.sentryDsn) {
+  Sentry.init({
+    dsn: config.sentryDsn,
+    environment: config.nodeEnv,
+    tracesSampleRate: 1.0,
+  });
+  app.use(Sentry.Handlers.requestHandler());
+  app.use(Sentry.Handlers.tracingHandler());
+}
 
-const PORT = parseInt(process.env["PORT"] ?? '5000', 10);
-server.listen(PORT, '0.0.0.0', () => {
-  logger.info(`[Server] Voice AI Server running on port ${PORT}`);
+// Middleware de sécurité
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      styleSrc: ["'self'", "'unsafe-inline'"],
+      scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
+      imgSrc: ["'self'", "data:", "https:"],
+      connectSrc: ["'self'", config.apiUrl, config.clientUrl],
+    },
+  },
+}));
+
+app.use(compression());
+app.use(cors({
+  origin: config.corsOrigin.split(','),
+  credentials: true,
+  optionsSuccessStatus: 200
+}));
+
+// Rate limiting
+const limiter = rateLimit({
+  windowMs: config.rateLimitWindow,
+  max: config.rateLimitMax,
+  message: { error: 'Trop de requêtes, veuillez réessayer plus tard.' },
+  standardHeaders: true,
+  legacyHeaders: false,
 });
+app.use('/api', limiter);
+
+// Logging
+app.use(pinoHttp({ 
+  logger,
+  customLogLevel: (req, res, err) => {
+    if (res.statusCode >= 500) return 'error';
+    if (res.statusCode >= 400) return 'warn';
+    return 'info';
+  }
+}));
+app.use(requestLogger);
+
+// Parsing
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+
+// Session
+app.use(session({
+  secret: config.sessionSecret,
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    secure: config.nodeEnv === 'production',
+    httpOnly: true,
+    maxAge: 1000 * 60 * 60 * 24 * 7, // 7 jours
+    sameSite: 'lax'
+  },
+  name: 'servicall.sid'
+}));
+
+// Passport (auth)
+app.use(passport.initialize());
+app.use(passport.session());
+
+// Database connection
+const sql = neon(config.databaseUrl);
+export const db = drizzle(sql);
+
+// Setup authentication
+setupAuth(app);
+
+// Routes API
+app.use('/api', setupRoutes(db));
+
+// WebSocket
+setupWebSocket(io, db);
+
+// Serve static files in production
+if (config.nodeEnv === 'production') {
+  app.use(express.static(join(__dirname, '../../dist/client')));
+  app.get('*', (req, res) => {
+    res.sendFile(join(__dirname, '../../dist/client/index.html'));
+  });
+}
+
+// Health check
+app.get('/health', (req, res) => {
+  res.json({ 
+    status: 'healthy', 
+    timestamp: new Date().toISOString(),
+    environment: config.nodeEnv,
+    uptime: process.uptime()
+  });
+});
+
+// Sentry error handler
+if (config.sentryDsn) {
+  app.use(Sentry.Handlers.errorHandler());
+}
+
+// Error handling
+app.use(errorHandler);
+
+// Démarrage du serveur
+const PORT = config.port;
+server.listen(PORT, () => {
+  logger.info(`🚀 Serveur démarré sur le port ${PORT} en mode ${config.nodeEnv}`);
+  logger.info(`📡 WebSocket prêt sur ws://localhost:${PORT}`);
+  logger.info(`📚 API disponible sur http://localhost:${PORT}/api`);
+});
+
+// Graceful shutdown
+process.on('SIGTERM', () => {
+  logger.info('SIGTERM reçu, arrêt gracieux...');
+  server.close(() => {
+    logger.info('Serveur arrêté');
+    process.exit(0);
+  });
+});
+
+process.on('uncaughtException', (error) => {
+  logger.error('Uncaught Exception:', error);
+  process.exit(1);
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+  logger.error('Unhandled Rejection at:', promise, 'reason:', reason);
+});
+
+export { app, server, io };
